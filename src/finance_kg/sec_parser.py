@@ -12,9 +12,9 @@ from .models import Entity, EntityType, Relation, RelationType, Triple
 
 # Common patterns for SEC filing extraction
 TICKER_PATTERN = re.compile(
-    r"\b([A-Z]{1,5})\s*\(\s*(?:NASDAQ|NYSE|AMEX|OTC)\s*\)"
-    r"|\b(?:ticker|symbol)\s*[:=]\s*([A-Z]{1,5})\b",
-    re.IGNORECASE,
+    r'\b([A-Z]{1,5})\s*\(\s*(?:NASDAQ|NYSE|AMEX|OTC)\s*\)'
+    r'|\b(?:ticker|symbol)\s*[:=]\s*([A-Z]{1,5})\b'
+    r'|\(([A-Z]{1,5})\)',
 )
 
 AMOUNT_PATTERN = re.compile(
@@ -29,10 +29,10 @@ DATE_PATTERN = re.compile(
     r"|\b\d{1,2}/\d{1,2}/\d{4}\b"
 )
 
-CIK_PATTERN = re.compile(r"\bCIK\s*[:#]?\s*(\d{10})\b", re.IGNORECASE)
+CIK_PATTERN = re.compile(r"\bCIK\b[^0-9]*(\d{10,})", re.IGNORECASE)
 
 COMPANY_NAME_PATTERN = re.compile(
-    r"\b([A-Z][A-Za-z\s&.,]+(?:Inc\.|Corp\.|Corporation|Ltd\.|LLC|Company|Co\.|Group|Holdings|International|Technologies|Enterprises))\b"
+    r'\b([A-Z][A-Za-z\s&.,]+(?:Inc\.|Corp\.|Corporation|Ltd\.|LLC|Company|Co\.|Group|Holdings|International|Technologies|Enterprises))'
 )
 
 ACQUISITION_PATTERN = re.compile(
@@ -98,7 +98,10 @@ class SECFilingParser:
         # Extract tickers
         ticker_matches = TICKER_PATTERN.findall(text)
         for match in ticker_matches:
-            ticker = match[0] or match[1] if isinstance(match, tuple) else match
+            if isinstance(match, tuple):
+                ticker = match[0] or match[1] or match[2]
+            else:
+                ticker = match
             if ticker:
                 result.tickers.append(ticker.upper())
 

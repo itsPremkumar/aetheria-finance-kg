@@ -52,8 +52,9 @@ class EntityExtractor:
 
     # Company patterns
     COMPANY_PATTERNS = [
-        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd\.|Group|Company|Co\.|Holdings|International|Technologies|Enterprises))\b',
-        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Bank|Financial|Capital|Securities|Insurance|Trust|Investments))\b',
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd\.|Group|Company|Co\.|Holdings|International|Technologies|Enterprises))',
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Bank|Financial|Capital|Securities|Insurance|Trust|Investments))',
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\b',
     ]
 
     # Ticker pattern (2-5 uppercase letters in parentheses or standalone)

@@ -74,19 +74,22 @@ class KnowledgeGraph:
 
     def get_network(self, entity_id: str, depth: int = 2) -> dict[str, Any]:
         """Get the relationship network for an entity up to a given depth."""
-        visited = set()
+        visited_nodes = set()
+        visited_edges = set()
         nodes = []
         edges = []
 
         def _explore(eid: str, d: int):
-            if d > depth or eid in visited:
+            if d > depth or eid in visited_nodes:
                 return
-            visited.add(eid)
+            visited_nodes.add(eid)
             entity = self._entities.get(eid)
             if entity:
                 nodes.append(entity.to_dict())
             for relation in self.get_relations(eid):
-                edges.append(relation.to_dict())
+                if relation.id not in visited_edges:
+                    visited_edges.add(relation.id)
+                    edges.append(relation.to_dict())
                 next_id = relation.target_id if relation.source_id == eid else relation.source_id
                 _explore(next_id, d + 1)
 

@@ -243,10 +243,11 @@ class FinancialReasoningEngine:
             + [{"type": "insider_transaction", "entity": e} for e in insider_txs]
         )
         
+        entity = self.kg.get_entity(entity_uri)
         return ReasoningResult(
             query=f"investment flows for {ticker}",
             result_type="investment_analysis",
-            entities=investor_entities + [entity.to_dict()] if entity else investor_entities,
+            entities=investor_entities + ([entity.to_dict()] if entity else []),
             relations=relations_data,
             metrics={
                 "num_investors": len(investors),

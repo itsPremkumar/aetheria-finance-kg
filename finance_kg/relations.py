@@ -52,13 +52,13 @@ class RelationExtractor:
 
     # Relation patterns: (pattern, relation_type)
     PATTERNS = [
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+acquired\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))', RelationType.ACQUIRED),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+invested\s+in\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))', RelationType.INVESTED_IN),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+merged\s+with\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))', RelationType.MERGED_WITH),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+competes?\s+with\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))', RelationType.COMPETES_WITH),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+supplies\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))', RelationType.SUPPLIES),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+has\s+a?\s*subsidiary\s+(?:called\s+)?(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)', RelationType.HAS_SUBSIDIARY),
-        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Inc\.|Corp\.|LLC|Ltd.))\s+filed\s+(a\s+)?(10-K|10-Q|8-K|S-1|13F|DEF\s*14A)', RelationType.FILED),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+acquired\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)', RelationType.ACQUIRED),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+invested\s+in\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)', RelationType.INVESTED_IN),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+merged\s+with\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)', RelationType.MERGED_WITH),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+competes?\s+with\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)', RelationType.COMPETES_WITH),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+supplies\s+(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)', RelationType.SUPPLIES),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+has\s+a?\s*subsidiary\s+(?:called\s+)?(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*)', RelationType.HAS_SUBSIDIARY),
+        (r'(\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+|\s+[A-Z])*(?:\s+(?:Inc\.|Corp\.|LLC|Ltd.))?)\s+filed\s+(a\s+)?(10-K|10-Q|8-K|S-1|13F|DEF\s*14A)', RelationType.FILED),
     ]
 
     def extract(self, text: str, entities: list = None) -> list[Relation]:

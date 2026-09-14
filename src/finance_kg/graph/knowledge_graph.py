@@ -181,6 +181,7 @@ class FinanceKnowledgeGraph:
         properties: Optional[dict[str, Any]] = None,
         confidence: float = 1.0,
         timestamp: Optional[datetime] = None,
+        source_name: str = "",
     ) -> None:
         """
         Add a relationship between two entities.
@@ -302,6 +303,54 @@ class FinanceKnowledgeGraph:
         
         return relations
 
+    def find_entities_by_type(self, entity_type: str) -> list[Entity]:
+        """Find all entities of a given type."""
+        results = []
+        for s, p, o in self.graph.triples((None, RDF.type, FINANCE[entity_type])):
+            entity = self.get_entity(s)
+            if entity:
+                results.append(entity)
+        return results
+
+    def find_entities_by_name(self, name: str) -> list[Entity]:
+        """Find entities matching a name (case-insensitive)."""
+        results = []
+        name_lower = name.lower()
+        for s, p, o in self.graph.triples((None, RDFS.label, None)):
+            if name_lower in str(o).lower():
+                entity = self.get_entity(s)
+                if entity:
+                    results.append(entity)
+        return results
+
+    def find_relations(
+        self,
+        entity_id: Optional[Union[str, URIRef]] = None,
+        relation_type: Optional[str] = None,
+    ) -> list[Relation]:
+        """Find relations, optionally filtered by entity or type."""
+        results = []
+        if entity_id is not None:
+            if isinstance(entity_id, str):
+                entity_id = URIRef(entity_id)
+            for _, prop, target in self.graph.triples((entity_id, None, None)):
+                if prop not in (RDF.type, RDFS.label, FINANCE.source, FINANCE.timestamp):
+                    if relation_type is None or str(prop).split("/")[-1] == relation_type:
+                        results.append(Relation(
+                            source_uri=entity_id,
+                            target_uri=target,
+                            relation_type=str(prop).split("/")[-1],
+                        ))
+            for source, prop, _ in self.graph.triples((None, None, entity_id)):
+                if prop not in (RDF.type, RDFS.label, FINANCE.source, FINANCE.timestamp):
+                    if relation_type is None or str(prop).split("/")[-1] == relation_type:
+                        results.append(Relation(
+                            source_uri=source,
+                            target_uri=entity_id,
+                            relation_type=str(prop).split("/")[-1],
+                        ))
+        return results
+
     def find_peers(self, uri: Union[str, URIRef]) -> list[URIRef]:
         """Find peer companies (direct competitors)."""
         if isinstance(uri, str):
@@ -362,7 +411,7 @@ class FinanceKnowledgeGraph:
         for _, prop, val in self.graph.triples((entity_uri, None, None)):
             if prop in (RDF.type, RDFS.label, FINANCE.source, FINANCE.timestamp):
                 continue
-            ts = self.graph.value(entity_uri, FINESTAMP)
+            ts = self.graph.value(entity_uri, FINANCE.timestamp)
             if ts:
                 try:
                     ts_date = date.fromisoformat(str(ts))

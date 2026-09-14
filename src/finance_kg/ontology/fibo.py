@@ -226,9 +226,10 @@ class FIBOOntology:
 
         for s, p, o in self.graph.triples((None, RDF.type, RDF.Property)):
             label = str(self.graph.value(s, RDFS.label) or s.split("/")[-1])
+            prop_name = str(s).split("/")[-1]
             domain = self.graph.value(s, RDFS.domain)
             range_ = self.graph.value(s, RDFS.range)
-            self._property_index[label] = FIBOProperty(
+            self._property_index[prop_name] = FIBOProperty(
                 uri=s, label=label, domain=domain, range=range_
             )
 
